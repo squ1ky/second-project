@@ -1,9 +1,9 @@
 public class Task {
 
-    private String title;
-    private String description;
-    private String status;
-    private int id;
+    protected String title;
+    protected String description;
+    protected String status;
+    protected int id;
 
     public Task() {
         this.title = "";
@@ -55,11 +55,20 @@ public class Task {
         return id;
     }
 
-    public Task getTask() {
-        return this;
-    }
 }
 
 class SubTask extends Task {
 
+    SubTask(int id) {
+        this.title = "null";
+        this.description = "null";
+        this.id = id;
+        this.status = "NEW";
+    }
+    SubTask(String title, String description, int id) {
+        this.title = title;
+        this.description = description;
+        this.id = id;
+        this.status = "NEW";
+    }
 }
