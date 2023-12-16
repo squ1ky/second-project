@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    private ArrayList<SubTask> epicSubTasks = new ArrayList<>();
+    private final ArrayList<SubTask> epicSubTasks = new ArrayList<>();
 
     Epic() {
         this.title = "";
         this.description = "";
         this.id = 0;
-        this.status = "NEW";
+        this.status = TaskStatus.NEW;
     }
     Epic(String title, String description, int id) {
         this.title = title;

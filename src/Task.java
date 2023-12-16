@@ -2,20 +2,20 @@ public class Task {
 
     protected String title;
     protected String description;
-    protected String status;
+    protected TaskStatus status;
     protected int id;
 
     public Task() {
         this.title = "";
         this.description = "";
         this.id = 0;
-        this.status = "NEW";
+        this.status = TaskStatus.NEW;
     }
     public Task(String title, String description, int id) {
         this.title = title;
         this.description = description;
         this.id = id;
-        this.status = "NEW";
+        this.status = TaskStatus.NEW;
     }
 
     // SETTER SECTION
@@ -28,7 +28,7 @@ public class Task {
         this.description = description;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
@@ -47,7 +47,7 @@ public class Task {
         return description;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
@@ -63,12 +63,12 @@ class SubTask extends Task {
         this.title = "null";
         this.description = "null";
         this.id = id;
-        this.status = "NEW";
+        this.status = TaskStatus.NEW;
     }
     SubTask(String title, String description, int id) {
         this.title = title;
         this.description = description;
         this.id = id;
-        this.status = "NEW";
+        this.status = TaskStatus.NEW;
     }
 }
