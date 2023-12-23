@@ -1,5 +1,10 @@
-import java.util.HashMap;
+import java.io.IOError;
+import java.util.List;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.LinkedHashSet;
 import java.util.Scanner;
 
 
@@ -15,23 +20,17 @@ interface TaskManager {
 
 }
 
-class InMemoryTaskManager implements TaskManager {
-    private final int[] history = new int[10];
-    private int historyPtr = 0;
+interface HistoryManager {
+    void add(Task task);
+    void remove(int id);
+    List<Task> getHistory();
+}
 
+class InMemoryTaskManager implements TaskManager, HistoryManager {
+    private final List<Task> historyTemp = new ArrayList<>();
     private int currentId = 1;
-    private final HashMap<Integer, Task> tasksId = new HashMap<>();
+    public final HashMap<Integer, Task> tasksId = new HashMap<>();
     Scanner scanner = new Scanner(System.in);
-
-    private void historyAdd(int id) {
-
-        if (historyPtr == 10) {
-            historyPtr = 0;
-        }
-
-        history[historyPtr] = id;
-        historyPtr++;
-    }
 
     @Override
     public void createTask() {
@@ -53,7 +52,7 @@ class InMemoryTaskManager implements TaskManager {
         System.out.println("Описание: " + currentTask.getDescription());
         System.out.println("Статус: " + currentTask.getStatus());
         System.out.println("Id = " + currentTask.getId());
-        historyAdd(id);
+        add(currentTask);
     }
 
     @Override
@@ -81,6 +80,7 @@ class InMemoryTaskManager implements TaskManager {
             String descripSub = scanner.nextLine();
 
             SubTask subTask = new SubTask(titleSub, descripSub, currentId);
+            tasksId.put(currentId, subTask);
             epic.addSubTask(subTask);
             currentId++;
         }
@@ -96,7 +96,7 @@ class InMemoryTaskManager implements TaskManager {
             System.out.println("Описание: " + currentSubTasks.get(i).getDescription());
             System.out.println("Статус: " + currentSubTasks.get(i).getStatus());
             System.out.println("ID: " + currentSubTasks.get(i).getId());
-            historyAdd(currentSubTasks.get(i).getId());
+            add(currentSubTasks.get(i));
         }
     }
 
@@ -104,6 +104,7 @@ class InMemoryTaskManager implements TaskManager {
     public void clearAll() {
         tasksId.clear();
         System.out.println("Все задачи успешно удалены!");
+        historyTemp.clear();
     }
 
     @Override
@@ -114,8 +115,12 @@ class InMemoryTaskManager implements TaskManager {
             currentId = cnt;
             cnt++;
         }
-        System.out.println("Задача удалена!");
-
+        for (Task task : historyTemp) {
+            if (task.getId() == id) {
+                historyTemp.remove((Integer) id);
+            }
+        }
+        System.out.println("Задача №" + id +  " удалена!");
     }
 
     @Override
@@ -134,7 +139,38 @@ class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public int[] getHistory() {
-        return history;
+
+    // HISTORY MANAGER SECTION
+
+    private Set<Task> getTasks() {
+        Set<Task> taskSet = new LinkedHashSet<>(historyTemp);
+        return taskSet;
     }
+    @Override
+    public void add(Task task) {
+        historyTemp.add(task);
+    }
+
+    @Override
+    public void remove(int id) {
+        historyTemp.remove(id);
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        final List<Task> history = new LinkedList<>(getTasks());
+        int n = history.size();
+        if (n <= 10) {
+            return history;
+        }
+        int i = 0;
+        while (i != n - 10) {
+            history.removeFirst();
+            i++;
+        }
+        return history;
+
+        // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] SIZE = 11 I = 0
+    }
+
 }
